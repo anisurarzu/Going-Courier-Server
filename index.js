@@ -33,10 +33,36 @@ async function run() {
       res.send(services);
     });
 
+    //get single service
+    app.get("/services/:id", async (req, res) => {
+      const id = req.params.id;
+
+      const query = { _id: ObjectId(id) };
+      const service = await serviceCollection.findOne(query);
+
+      res.json(service);
+    });
+    // get orders api
+
+    app.get("/orders", async (req, res) => {
+      const cursor = orderCollection.find({});
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
+
     // post api(order)
     app.post("/orders", async (req, res) => {
       const order = req.body;
       const result = await orderCollection.insertOne(order);
+      res.json(result);
+    });
+
+    // delete api(orders)
+
+    app.delete("/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await orderCollection.deleteOne(query);
       res.json(result);
     });
   } finally {
