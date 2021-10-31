@@ -57,7 +57,12 @@ async function run() {
       const order = await orderCollection.findOne(query);
       res.json(order);
     });
-
+    // post new service api
+    app.post("/services", async (req, res) => {
+      const order = req.body;
+      const result = await serviceCollection.insertOne(order);
+      res.json(result);
+    });
     // post api(order)
     app.post("/orders", async (req, res) => {
       const order = req.body;
