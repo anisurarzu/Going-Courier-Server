@@ -50,10 +50,38 @@ async function run() {
       res.send(orders);
     });
 
+    // get single order api
+    app.get("/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const order = await orderCollection.findOne(query);
+      res.json(order);
+    });
+
     // post api(order)
     app.post("/orders", async (req, res) => {
       const order = req.body;
       const result = await orderCollection.insertOne(order);
+      res.json(result);
+    });
+
+    // update/put order status api
+
+    app.put("/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      const updateOrder = req.body;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          status: updateOrder.status,
+        },
+      };
+      const result = await orderCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
       res.json(result);
     });
 
